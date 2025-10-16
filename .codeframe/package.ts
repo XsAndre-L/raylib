@@ -67,6 +67,8 @@ export const build = (cwd: string = process.cwd()): BuildType => {
       -DX11_X11_LIB=${LINUX}/ubuntu22-sysroot/usr/lib/x86_64-linux-gnu/libX11.so \
       -DCMAKE_C_COMPILER=${CLANG} \
       -DCMAKE_CXX_COMPILER=${CLANGXX} \
+      -DCMAKE_C_COMPILER_TARGET=x86_64-unknown-linux-gnu \
+      -DCMAKE_CXX_COMPILER_TARGET=x86_64-unknown-linux-gnu \
       -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}/linux/x86_64/raylib
       `,
 
@@ -85,6 +87,8 @@ export const build = (cwd: string = process.cwd()): BuildType => {
       -DX11_X11_LIB=${LINUX}/ubuntu22-sysroot/usr/lib/x86_64-linux-gnu/libX11.so \
       -DCMAKE_C_COMPILER=${mingw_CLANG} \
       -DCMAKE_CXX_COMPILER=${mingw_CLANGXX} \
+      -DCMAKE_C_COMPILER_TARGET=aarch64-unknown-linux-gnu \
+      -DCMAKE_CXX_COMPILER_TARGET=aarch64-unknown-linux-gnu \
       -DCMAKE_RC_FLAGS=--target=aarch64-w64-mingw32 \
       -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}/linux/aarch64/raylib
       `,
