@@ -1,0 +1,10 @@
+{
+  "dependencyConfig": {
+    "name": "raylib",
+    "libPath": "external/raylib",
+    "linkType": "static",
+    "libs": ["raylib"],
+    "version": "5.5"
+  },
+  "libraryOptions": {}
+}
