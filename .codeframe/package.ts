@@ -32,7 +32,7 @@ export const build = (cwd: string = process.cwd()): BuildType => {
       -DCMAKE_C_COMPILER_TARGET=x86_64-w64-windows-gnu \
       -DCMAKE_CXX_COMPILER_TARGET=x86_64-w64-windows-gnu \
       -DCMAKE_PREFIX_PATH=${OUTPUT_DIR}/windows/x86_64/zlib \
-      -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}/windows/x86_64/raylib
+      -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}/raylib/windows/x86_64
       `,
 
       buildStep: `cmake --build build/windows/x86_64 -j --target raylib`,
@@ -50,14 +50,14 @@ export const build = (cwd: string = process.cwd()): BuildType => {
       -DCMAKE_C_COMPILER_TARGET=aarch64-w64-windows-gnu \
       -DCMAKE_CXX_COMPILER_TARGET=aarch64-w64-windows-gnu \
       -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
-      -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}/windows/aarch64/raylib
+      -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}/raylib/windows/aarch64
       `,
       buildStep: `cmake --build build/windows/aarch64 -j --target raylib`,
       installStep: `cmake --install build/windows/aarch64`,
     },
     linux_x86_64: {
       configStep: `cmake -S . -B build/linux/x86_64 -G Ninja \
-      -DCMAKE_TOOLCHAIN_FILE=${LINUX}/linux.cmake \
+      -DCMAKE_TOOLCHAIN_FILE=${LINUX}/linux_x86-64.cmake \
       -DCMAKE_BUILD_TYPE=Release \
       -DBUILD_SHARED_LIBS=OFF \
       -DBUILD_EXAMPLES=OFF \
@@ -69,7 +69,7 @@ export const build = (cwd: string = process.cwd()): BuildType => {
       -DCMAKE_CXX_COMPILER=${CLANGXX} \
       -DCMAKE_C_COMPILER_TARGET=x86_64-unknown-linux-gnu \
       -DCMAKE_CXX_COMPILER_TARGET=x86_64-unknown-linux-gnu \
-      -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}/linux/x86_64/raylib
+      -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}/raylib/linux/x86_64
       `,
 
       buildStep: `cmake --build build/linux/x86_64 -j --target raylib`,
@@ -77,20 +77,20 @@ export const build = (cwd: string = process.cwd()): BuildType => {
     },
     linux_aarch64: {
       configStep: `cmake -S . -B build/linux/aarch64 -G Ninja \
-      -DCMAKE_TOOLCHAIN_FILE=${LINUX}/linux.cmake \
+      -DCMAKE_TOOLCHAIN_FILE=${LINUX}/linux_aarch64.cmake \
       -DCMAKE_BUILD_TYPE=Release \
       -DBUILD_SHARED_LIBS=OFF \
       -DBUILD_EXAMPLES=OFF \
       -DGLFW_BUILD_X11=ON \ 
       -DGLFW_BUILD_WAYLAND=OFF \
-      -DX11_X11_INCLUDE_PATH=${LINUX}/ubuntu22-sysroot/usr/include \
-      -DX11_X11_LIB=${LINUX}/ubuntu22-sysroot/usr/lib/x86_64-linux-gnu/libX11.so \
+      -DX11_X11_INCLUDE_PATH=${LINUX}/linux22-sysroot/usr/include \
+      -DX11_X11_LIB=${LINUX}/linux22-sysroot/usr/lib/x86_64-linux-gnu/libX11.so \
       -DCMAKE_C_COMPILER=${mingw_CLANG} \
       -DCMAKE_CXX_COMPILER=${mingw_CLANGXX} \
       -DCMAKE_C_COMPILER_TARGET=aarch64-unknown-linux-gnu \
       -DCMAKE_CXX_COMPILER_TARGET=aarch64-unknown-linux-gnu \
       -DCMAKE_RC_FLAGS=--target=aarch64-w64-mingw32 \
-      -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}/linux/aarch64/raylib
+      -DCMAKE_INSTALL_PREFIX=${OUTPUT_DIR}/raylib/linux/aarch64
       `,
       buildStep: `cmake --build build/linux/aarch64 -j --target raylib`,
       installStep: `cmake --install build/linux/aarch64`,
