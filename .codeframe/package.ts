@@ -5,6 +5,7 @@ import { resolve, join } from "node:path";
 import { argv } from "node:process";
 
 export const build = (cwd: string = process.cwd()): BuildType => {
+  const TOOLCHAINS = resolve(cwd, "../../toolchains/cmake-tools");
   const LINUX = resolve(cwd, "../../toolchains/linux");
   const toolchain_clang = resolve(cwd, "../../toolchains/dependencies/clang");
   const CLANG = join(toolchain_clang, "bin/clang.exe").replace(/\\/g, "/");
@@ -57,14 +58,14 @@ export const build = (cwd: string = process.cwd()): BuildType => {
     },
     linux_x86_64: {
       configStep: `cmake -S . -B build/linux/x86_64 -G Ninja \
-      -DCMAKE_TOOLCHAIN_FILE=${LINUX}/linux_x86-64.cmake \
+      -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAINS}/linux_x86-64.cmake \
       -DCMAKE_BUILD_TYPE=Release \
       -DBUILD_SHARED_LIBS=OFF \
       -DBUILD_EXAMPLES=OFF \
       -DGLFW_BUILD_X11=ON \ 
       -DGLFW_BUILD_WAYLAND=OFF \
-      -DX11_X11_INCLUDE_PATH=${LINUX}/ubuntu22-sysroot/usr/include \
-      -DX11_X11_LIB=${LINUX}/ubuntu22-sysroot/usr/lib/x86_64-linux-gnu/libX11.so \
+      -DX11_X11_INCLUDE_PATH=${LINUX}/linux24-amd64/usr/include \
+      -DX11_X11_LIB=${LINUX}/linux24-amd64/usr/lib/x86_64-linux-gnu/libX11.so \
       -DCMAKE_C_COMPILER=${CLANG} \
       -DCMAKE_CXX_COMPILER=${CLANGXX} \
       -DCMAKE_C_COMPILER_TARGET=x86_64-unknown-linux-gnu \
@@ -77,14 +78,14 @@ export const build = (cwd: string = process.cwd()): BuildType => {
     },
     linux_aarch64: {
       configStep: `cmake -S . -B build/linux/aarch64 -G Ninja \
-      -DCMAKE_TOOLCHAIN_FILE=${LINUX}/linux_aarch64.cmake \
+      -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAINS}/linux_aarch64.cmake \
       -DCMAKE_BUILD_TYPE=Release \
       -DBUILD_SHARED_LIBS=OFF \
       -DBUILD_EXAMPLES=OFF \
       -DGLFW_BUILD_X11=ON \ 
       -DGLFW_BUILD_WAYLAND=OFF \
-      -DX11_X11_INCLUDE_PATH=${LINUX}/linux22-sysroot/usr/include \
-      -DX11_X11_LIB=${LINUX}/linux22-sysroot/usr/lib/x86_64-linux-gnu/libX11.so \
+      -DX11_X11_INCLUDE_PATH=${LINUX}/linux24-aarch64/usr/include \
+      -DX11_X11_LIB=${LINUX}/linux24-aarch64/usr/lib/x86_64-linux-gnu/libX11.so \
       -DCMAKE_C_COMPILER=${mingw_CLANG} \
       -DCMAKE_CXX_COMPILER=${mingw_CLANGXX} \
       -DCMAKE_C_COMPILER_TARGET=aarch64-unknown-linux-gnu \
