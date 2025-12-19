@@ -6,10 +6,18 @@ import {
   getHostSysrootPath,
   SYSROOT,
   PACKAGE_DIR,
-} from "../../../../src/providers/package.privider.ts";
+  BuildConfiguration,
+  LibraryInfo,
+} from "../../../../src/providers/package.provider.ts";
 
 import { join } from "node:path";
 import { argv } from "node:process";
+
+export const info: LibraryInfo = {
+  name: "raylib",
+  outDir: "build",
+  version: "5.5.0",
+};
 
 export const build = (cwd: string = process.cwd()): BuildType => {
   const HOST_SYSROOT = getHostSysrootPath();
@@ -17,9 +25,9 @@ export const build = (cwd: string = process.cwd()): BuildType => {
   const CLANGXX = join(HOST_SYSROOT, "bin/clang++.exe").replace(/\\/g, "/");
 
   return {
-    type: "architectures",
+    type: "compilation",
     windows_x86_64: {
-      configStep: `cmake -S . -B build/windows/x86_64 -G Ninja \
+      configStep: `cmake -S . -B ${info.outDir}/windows/x86_64 -G Ninja \
       -DCMAKE_BUILD_TYPE=Release \
       -DBUILD_SHARED_LIBS=OFF \
       -DBUILD_EXAMPLES=OFF \
@@ -29,13 +37,13 @@ export const build = (cwd: string = process.cwd()): BuildType => {
       -DCMAKE_C_COMPILER_TARGET=x86_64-w64-windows-gnu \
       -DCMAKE_CXX_COMPILER_TARGET=x86_64-w64-windows-gnu \
       -DCMAKE_PREFIX_PATH=${CPP_OUTPUT_DIR}/windows/x86_64/zlib \
-      -DCMAKE_INSTALL_PREFIX=${CPP_OUTPUT_DIR}/raylib/windows/x86_64
+      -DCMAKE_INSTALL_PREFIX=${CPP_OUTPUT_DIR}/${info.name}/windows/x86_64
       `,
-      buildStep: `cmake --build build/windows/x86_64 -j --target raylib`,
-      installStep: `cmake --install build/windows/x86_64`,
+      buildStep: `cmake --build ${info.outDir}/windows/x86_64 -j --target ${info.name}`,
+      installStep: `cmake --install ${info.outDir}/windows/x86_64`,
     },
     windows_aarch64: {
-      configStep: `cmake -S . -B build/windows/aarch64 -G Ninja \
+      configStep: `cmake -S . -B ${info.outDir}/windows/aarch64 -G Ninja \
       -DCMAKE_BUILD_TYPE=Release \
       -DBUILD_SHARED_LIBS=OFF \
       -DBUILD_EXAMPLES=OFF \
@@ -46,10 +54,10 @@ export const build = (cwd: string = process.cwd()): BuildType => {
       -DCMAKE_C_COMPILER_TARGET=aarch64-w64-windows-gnu \
       -DCMAKE_CXX_COMPILER_TARGET=aarch64-w64-windows-gnu \
       -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
-      -DCMAKE_INSTALL_PREFIX=${CPP_OUTPUT_DIR}/raylib/windows/aarch64
+      -DCMAKE_INSTALL_PREFIX=${CPP_OUTPUT_DIR}/${info.name}/windows/aarch64
       `,
-      buildStep: `cmake --build build/windows/aarch64 -j --target raylib`,
-      installStep: `cmake --install build/windows/aarch64`,
+      buildStep: `cmake --build ${info.outDir}/windows/aarch64 -j --target ${info.name}`,
+      installStep: `cmake --install ${info.outDir}/windows/aarch64`,
     },
     linux_x86_64: {
       configStep: `cmake -S . -B build/linux/x86_64 -G Ninja \
@@ -65,11 +73,11 @@ export const build = (cwd: string = process.cwd()): BuildType => {
       -DX11_X11_LIB=${SYSROOT.linux_x86_64}/lib/x86_64-linux-gnu/libX11.so \
       -DCMAKE_C_COMPILER_TARGET=x86_64-unknown-linux-gnu \
       -DCMAKE_CXX_COMPILER_TARGET=x86_64-unknown-linux-gnu \
-      -DCMAKE_INSTALL_PREFIX=${CPP_OUTPUT_DIR}/raylib/linux/x86_64
+      -DCMAKE_INSTALL_PREFIX=${CPP_OUTPUT_DIR}/${info.name}/linux/x86_64
       `,
 
-      buildStep: `cmake --build build/linux/x86_64 -j --target raylib`,
-      installStep: `cmake --install build/linux/x86_64`,
+      buildStep: `cmake --build ${info.outDir}/linux/x86_64 -j --target ${info.name}`,
+      installStep: `cmake --install ${info.outDir}/linux/x86_64`,
     },
     linux_aarch64: {
       configStep: `cmake -S . -B build/linux/aarch64 -G Ninja \
@@ -86,10 +94,10 @@ export const build = (cwd: string = process.cwd()): BuildType => {
       -DCMAKE_C_COMPILER_TARGET=aarch64-unknown-linux-gnu \
       -DCMAKE_CXX_COMPILER_TARGET=aarch64-unknown-linux-gnu \
       -DCMAKE_RC_FLAGS=--target=aarch64-w64-mingw32 \
-      -DCMAKE_INSTALL_PREFIX=${CPP_OUTPUT_DIR}/raylib/linux/aarch64
+      -DCMAKE_INSTALL_PREFIX=${CPP_OUTPUT_DIR}/${info.name}/linux/aarch64
       `,
-      buildStep: `cmake --build build/linux/aarch64 -j --target raylib`,
-      installStep: `cmake --install build/linux/aarch64`,
+      buildStep: `cmake --build ${info.outDir}/linux/aarch64 -j --target ${info.name}`,
+      installStep: `cmake --install ${info.outDir}/linux/aarch64`,
     },
   } satisfies BuildType;
 };
@@ -97,4 +105,9 @@ export const build = (cwd: string = process.cwd()): BuildType => {
 const args = argv.slice(2);
 const [action = "help"] = args;
 
-await runPackageAction(action, process.cwd(), build());
+const buildConfig: BuildConfiguration = {
+  info,
+  build: build(),
+};
+
+await runPackageAction(action, process.cwd(), buildConfig);
